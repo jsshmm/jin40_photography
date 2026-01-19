@@ -40,7 +40,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     await GalleryBuilder.init();
     GalleryFilter.init();
     Modal.init();
+    ScrollToTop.init();
 });
+
+// ===== Scroll to Top =====
+const ScrollToTop = {
+    button: null,
+    lastScrollY: 0,
+    minScrollToShow: 300,
+
+    init() {
+        this.button = document.getElementById('scrollToTop');
+        if (!this.button) return;
+
+        this.button.onclick = () => this.scrollToTop();
+
+        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
+    },
+
+    handleScroll() {
+        const currentScrollY = window.scrollY;
+
+        // Show button when scrolling up and past minimum scroll threshold
+        if (currentScrollY < this.lastScrollY && currentScrollY > this.minScrollToShow) {
+            this.button.classList.add('visible');
+        } else {
+            this.button.classList.remove('visible');
+        }
+
+        this.lastScrollY = currentScrollY;
+    },
+
+    scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+};
 
 // ===== Gallery Builder =====
 const GalleryBuilder = {
