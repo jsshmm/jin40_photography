@@ -146,19 +146,18 @@ const GalleryBuilder = {
 
     resizeGalleryItem(item) {
         const grid = document.querySelector(CONFIG.galleryGridSelector);
+        if (!grid) return;
+
         const rowHeight = CONFIG.rowHeight;
-        const rowGap = CONFIG.rowGap;
+
+        // Dynamic row gap from CSS (handles mobile breakpoint changes)
+        const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('row-gap')) || CONFIG.rowGap;
 
         // Find the image inside
         const img = item.querySelector('img');
         if (!img) return;
 
-        // Calculate span
-        // formula: rowSpan = ceil((contentHeight + gap) / (rowHeight + gap))
-        // Note: contentHeight here is the current RENDERED height of the image
-        // We assume width is set by grid-column.
-
-        // Force a read to ensure layout is up to date?
+        // Force a read to ensure layout is up to date
         const contentHeight = img.getBoundingClientRect().height;
 
         // If image hasn't loaded or has 0 height, skip or retry
