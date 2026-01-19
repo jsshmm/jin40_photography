@@ -9,6 +9,32 @@ const CONFIG = {
     loadMoreCount: 30
 };
 
+// ===== Utility Functions =====
+function formatPhotoInfo(data) {
+    // Tech specs
+    const techSpecs = [];
+    if (data.focalLength) techSpecs.push(`${data.focalLength}mm`);
+    if (data.aperture) techSpecs.push(`f/${data.aperture}`);
+    if (data.exposureTime) {
+        const time = data.exposureTime < 1 ? `1/${Math.round(1 / data.exposureTime)}s` : `${data.exposureTime}s`;
+        techSpecs.push(time);
+    }
+
+    // Camera (add make only if model doesn't already contain it)
+    let camera = data.model || '';
+    if (data.make && data.model && !data.model.toUpperCase().includes(data.make.toUpperCase().split(' ')[0])) {
+        camera = `${data.make} ${data.model}`;
+    }
+
+    // Country
+    const country = data.country ? data.country.charAt(0).toUpperCase() + data.country.slice(1) : '';
+
+    return {
+        techLine: techSpecs.join(' · '),
+        contextLine: [camera, data.year, country].filter(Boolean).join(' · ')
+    };
+}
+
 // ===== Main Initialization =====
 document.addEventListener('DOMContentLoaded', async () => {
     await GalleryBuilder.init();
@@ -192,24 +218,9 @@ const GalleryBuilder = {
         const h4 = document.createElement('h4');
         const p = document.createElement('p');
 
-        // Tech Specs
-        const techSpecs = [];
-        if (data.focalLength) techSpecs.push(`${data.focalLength}mm`);
-        if (data.aperture) techSpecs.push(`f/${data.aperture}`);
-        if (data.exposureTime) {
-            const time = data.exposureTime < 1 ? `1/${Math.round(1 / data.exposureTime)}s` : `${data.exposureTime}s`;
-            techSpecs.push(time);
-        }
-        h4.textContent = techSpecs.join(' · ');
-
-        // Context
-        const context = [];
-        if (data.model || data.make) context.push(data.model || data.make);
-        if (data.year) context.push(data.year);
-        if (data.country) {
-            context.push(data.country.charAt(0).toUpperCase() + data.country.slice(1));
-        }
-        p.textContent = context.join(' · ');
+        const info = formatPhotoInfo(data);
+        h4.textContent = info.techLine;
+        p.textContent = info.contextLine;
 
         overlay.appendChild(h4);
         overlay.appendChild(p);
@@ -382,19 +393,7 @@ const Modal = {
         const data = GalleryBuilder.filteredData[this.currentIndex];
         this.img.src = `images/gallery/${data.filePath}`;
 
-        let exposure = '';
-        if (data.exposureTime) {
-            exposure = data.exposureTime < 1 ? `1/${Math.round(1 / data.exposureTime)}s` : `${data.exposureTime}s`;
-        }
-
-        const techParts = [];
-        if (data.focalLength) techParts.push(`${data.focalLength}mm`);
-        if (data.aperture) techParts.push(`f/${data.aperture}`);
-        if (exposure) techParts.push(exposure);
-
-        const tech = techParts.join(' · ');
-        const country = data.country ? data.country.charAt(0).toUpperCase() + data.country.slice(1) : '';
-        const ctx = [data.model, data.year, country].filter(Boolean).join(' · ');
-        this.caption.textContent = `${tech} | ${ctx}`;
+        const info = formatPhotoInfo(data);
+        this.caption.textContent = `${info.techLine} | ${info.contextLine}`;
     }
 };
