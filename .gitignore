@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# New photos (temporary upload folder)
+images/new/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

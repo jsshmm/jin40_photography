@@ -1,0 +1,310 @@
+// ===== DOM Elements =====
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu = document.querySelector('.nav-menu');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const galleryItems = document.querySelectorAll('.gallery-item');
+const modal = document.getElementById('imageModal');
+const modalImg = document.getElementById('modalImage');
+const modalCaption = document.getElementById('modalCaption');
+const modalClose = document.querySelector('.modal-close');
+const modalPrev = document.querySelector('.modal-prev');
+const modalNext = document.querySelector('.modal-next');
+
+// ===== Mobile Navigation =====
+if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking on a link
+    navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    });
+}
+
+// ===== Navbar Scroll Effect =====
+let lastScroll = 0;
+const navbar = document.querySelector('.navbar');
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+
+    if (currentScroll > 100) {
+        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+    } else {
+        navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+    }
+
+    lastScroll = currentScroll;
+});
+
+// ===== Gallery Filter =====
+if (filterBtns.length > 0 && galleryItems.length > 0) {
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.dataset.filter;
+
+            // Filter gallery items
+            galleryItems.forEach(item => {
+                if (filter === 'all' || item.dataset.category === filter) {
+                    item.classList.remove('hide');
+                    item.style.animation = 'fadeIn 0.5s ease forwards';
+                } else {
+                    item.classList.add('hide');
+                }
+            });
+        });
+    });
+}
+
+// ===== Gallery Modal =====
+let currentImageIndex = 0;
+let visibleImages = [];
+
+function updateVisibleImages() {
+    visibleImages = Array.from(galleryItems).filter(item => !item.classList.contains('hide'));
+}
+
+function openModal(index) {
+    updateVisibleImages();
+    currentImageIndex = index;
+
+    const item = visibleImages[index];
+    const img = item.querySelector('img');
+    const title = item.querySelector('h4')?.textContent || '';
+
+    modal.classList.add('active');
+    modalImg.src = img.src;
+    modalCaption.textContent = title;
+
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function showPrevImage() {
+    currentImageIndex = (currentImageIndex - 1 + visibleImages.length) % visibleImages.length;
+    const item = visibleImages[currentImageIndex];
+    const img = item.querySelector('img');
+    const title = item.querySelector('h4')?.textContent || '';
+
+    modalImg.src = img.src;
+    modalCaption.textContent = title;
+}
+
+function showNextImage() {
+    currentImageIndex = (currentImageIndex + 1) % visibleImages.length;
+    const item = visibleImages[currentImageIndex];
+    const img = item.querySelector('img');
+    const title = item.querySelector('h4')?.textContent || '';
+
+    modalImg.src = img.src;
+    modalCaption.textContent = title;
+}
+
+// Gallery item click handlers
+if (galleryItems.length > 0) {
+    galleryItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            updateVisibleImages();
+            const visibleIndex = visibleImages.indexOf(item);
+            if (visibleIndex !== -1) {
+                openModal(visibleIndex);
+            }
+        });
+    });
+}
+
+// Modal controls
+if (modal) {
+    modalClose?.addEventListener('click', closeModal);
+    modalPrev?.addEventListener('click', showPrevImage);
+    modalNext?.addEventListener('click', showNextImage);
+
+    // Close modal when clicking outside image
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('active')) return;
+
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') showPrevImage();
+        if (e.key === 'ArrowRight') showNextImage();
+    });
+}
+
+// ===== Smooth Scroll for Anchor Links =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+
+        e.preventDefault();
+        const target = document.querySelector(href);
+
+        if (target) {
+            const offset = 80; // Navbar height
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// ===== Intersection Observer for Fade-in Animation =====
+const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe elements for animation
+document.querySelectorAll('.featured-item, .blog-card, .about-content, .gallery-item').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+});
+
+// ===== Lazy Loading Images =====
+if ('loading' in HTMLImageElement.prototype) {
+    // Browser supports native lazy loading
+    document.querySelectorAll('img').forEach(img => {
+        if (!img.hasAttribute('loading')) {
+            img.setAttribute('loading', 'lazy');
+        }
+    });
+} else {
+    // Fallback for browsers without native lazy loading
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+
+    const lazyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src || img.src;
+                lazyObserver.unobserve(img);
+            }
+        });
+    });
+
+    lazyImages.forEach(img => lazyObserver.observe(img));
+}
+
+// ===== Active Navigation Link =====
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+setActiveNavLink();
+
+// ===== Featured Items Hover Effect =====
+document.querySelectorAll('.featured-item').forEach(item => {
+    item.addEventListener('click', () => {
+        window.location.href = 'gallery.html';
+    });
+});
+
+// ===== Console Welcome Message =====
+console.log('%c Photography Portfolio ', 'background: #2c3e50; color: white; padding: 10px 20px; font-size: 16px;');
+console.log('Thanks for checking out my portfolio!');
+
+// ===== Featured Works Dynamic Loading =====
+async function loadFeaturedWorks() {
+    const featuredGrid = document.getElementById('featured-grid');
+    if (!featuredGrid) return;
+
+    try {
+        const response = await fetch('data/metadata.json');
+        if (!response.ok) throw new Error('Failed to load metadata');
+
+        const items = await response.json();
+
+        // Shuffle and pick 3 random items
+        const shuffled = items.sort(() => Math.random() - 0.5);
+        const featured = shuffled.slice(0, 3);
+
+        // Clear grid
+        featuredGrid.innerHTML = '';
+
+        // Create featured items
+        featured.forEach(data => {
+            const div = document.createElement('div');
+            div.className = 'featured-item';
+
+            const img = document.createElement('img');
+            img.src = `images/gallery/${data.filePath}`;
+            img.alt = `${data.country || 'Photo'} - ${data.year || ''}`;
+            img.loading = 'lazy';
+            img.onerror = () => { img.src = 'https://picsum.photos/400/300?random=' + Math.random(); };
+
+            const overlay = document.createElement('div');
+            overlay.className = 'featured-overlay';
+
+            const h4 = document.createElement('h4');
+            const context = [];
+            if (data.country) context.push(data.country.charAt(0).toUpperCase() + data.country.slice(1));
+            if (data.year) context.push(data.year);
+            h4.textContent = context.join(' · ') || 'Featured';
+
+            overlay.appendChild(h4);
+            div.appendChild(img);
+            div.appendChild(overlay);
+            featuredGrid.appendChild(div);
+
+            // Re-observe for fade-in animation
+            div.style.opacity = '0';
+            observer.observe(div);
+        });
+
+    } catch (error) {
+        console.error('Failed to load featured works:', error);
+        featuredGrid.innerHTML = '<p class="error">Failed to load featured works.</p>';
+    }
+}
+
+// Load featured works on page load
+document.addEventListener('DOMContentLoaded', loadFeaturedWorks);

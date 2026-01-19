@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "2024-03-15-golden-hour",
+    "title": "Mastering Golden Hour Photography",
+    "date": "2024-03-15",
+    "category": "Tips",
+    "thumbnail": "https://picsum.photos/600/400?random=30",
+    "excerpt": "Learn how to capture stunning landscape photos during sunrise and sunset."
+  },
+  {
+    "slug": "2024-03-10-lens-guide",
+    "title": "Lens Selection Guide for Travel Photographers",
+    "date": "2024-03-10",
+    "category": "Gear",
+    "thumbnail": "https://picsum.photos/600/400?random=31",
+    "excerpt": "Find the perfect lens setup for your travel photography adventures."
+  },
+  {
+    "slug": "2024-03-05-kyoto-trip",
+    "title": "A Week in Kyoto, Japan",
+    "date": "2024-03-05",
+    "category": "Travel",
+    "thumbnail": "https://picsum.photos/600/400?random=32",
+    "excerpt": "A photo journal of my week-long trip exploring the ancient capital of Japan."
+  }
+]
