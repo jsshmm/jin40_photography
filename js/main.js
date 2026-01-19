@@ -159,7 +159,7 @@ if (modal) {
 
 // ===== Smooth Scroll for Anchor Links =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
         if (href === '#') return;
 
@@ -185,20 +185,50 @@ const observerOptions = {
     threshold: 0.1
 };
 
-const observer = new IntersectionObserver((entries) => {
+// 1. Replay Observer (For Home Page: fade in/out every time)
+const replayObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('fade-in');
-            observer.unobserve(entry.target);
+        } else {
+            entry.target.classList.remove('fade-in');
+        }
+    });
+}, observerOptions);
+
+// 2. Run-Once Observer (For Gallery Page: fade in once, then stay)
+const onceObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            onceObserver.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
 // Observe elements for animation
-document.querySelectorAll('.featured-item, .blog-card, .about-content, .gallery-item').forEach(el => {
+// Home elements -> Replay
+document.querySelectorAll('.featured-item, .blog-card, .about-content').forEach(el => {
     el.style.opacity = '0';
-    observer.observe(el);
+    replayObserver.observe(el);
 });
+
+// Gallery items -> Run Once
+document.querySelectorAll('.gallery-item').forEach(el => {
+    el.style.opacity = '0';
+    onceObserver.observe(el);
+});
+// Note: Dynamic gallery items are observed in gallery.js, make sure to update there if needed or export these.
+// Actually gallery.js handles its own observers effectively via CSS animations or we can expose this.
+// Given separate files, let's keep gallery.js independent but consistent.
+// However, the user specifically mentioned "gallery tab".
+// js/gallery.js uses "item.style.animation = 'fadeIn...'" manually in filtering, 
+// so it might clash with this global observer if not careful.
+// But wait, the previous code observed .gallery-item here in main.js.
+// Since gallery items are dynamic, this main.js code only caches initial ones? 
+// Actually gallery.js loads items dynamically. This selector might be empty on load.
+// Let's ensure gallery.js uses the right logic. 
+// For now, let's just definition separate strategies here if used.
 
 // ===== Lazy Loading Images =====
 if ('loading' in HTMLImageElement.prototype) {
@@ -297,7 +327,7 @@ async function loadFeaturedWorks() {
 
             // Re-observe for fade-in animation
             div.style.opacity = '0';
-            observer.observe(div);
+            replayObserver.observe(div);
         });
 
     } catch (error) {

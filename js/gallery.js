@@ -235,6 +235,7 @@ const GalleryFilter = {
 
         const filterValue = btn.dataset.filter;
         const filterType = this.currentFilterType;
+        let visibleCount = 0;
 
         this.galleryItems.forEach(item => {
             const itemValue = item.dataset[filterType];
@@ -244,20 +245,44 @@ const GalleryFilter = {
                 item.classList.remove('hide');
                 item.style.display = ''; // Reset display for grid
                 item.style.animation = 'fadeIn 0.5s ease forwards';
-                // Trigger resize for this item to ensure grid placement is correct?
-                // Actually grid handles it, but if it was display:none, height might have been 0.
                 GalleryBuilder.resizeGalleryItem(item);
+                visibleCount++;
             } else {
                 item.classList.add('hide');
-                // We must hide it completely for grid to repack
-                setTimeout(() => { if (item.classList.contains('hide')) item.style.display = 'none'; }, 500); // After animation
-                // Or immediately set display: none if we don't care about fade out spacing
                 item.style.display = 'none';
             }
         });
 
         // Trigger a global resize after filtering to be safe
         setTimeout(() => GalleryBuilder.resizeAllGalleryItems(), 50);
+
+        // Handle empty state
+        this.updateEmptyState(visibleCount);
+    },
+
+    updateEmptyState(count) {
+        const grid = document.querySelector(CONFIG.galleryGridSelector);
+        let params = document.querySelector('.gallery-empty-message');
+
+        if (count === 0) {
+            grid.style.display = 'none';
+            if (!params) {
+                params = document.createElement('div');
+                params.className = 'gallery-empty-message';
+                params.textContent = 'No photos found in this category.';
+                params.style.textAlign = 'center';
+                params.style.padding = '50px';
+                params.style.color = '#666';
+                grid.parentNode.insertBefore(params, grid.nextSibling);
+            } else {
+                params.style.display = 'block';
+            }
+        } else {
+            grid.style.display = 'grid'; // Restore grid display
+            if (params) {
+                params.style.display = 'none';
+            }
+        }
     },
 
     showAllItems() {
@@ -267,6 +292,12 @@ const GalleryFilter = {
             item.style.animation = 'fadeIn 0.5s ease forwards';
             GalleryBuilder.resizeGalleryItem(item);
         });
+
+        // Reset empty state
+        const grid = document.querySelector(CONFIG.galleryGridSelector);
+        const params = document.querySelector('.gallery-empty-message');
+        if (grid) grid.style.display = 'grid';
+        if (params) params.style.display = 'none';
     }
 };
 
