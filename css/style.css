@@ -383,72 +383,85 @@ html.snap-scroll section {
 }
 
 /* Filter Tabs */
+/* Filter Container */
 .filter-tabs {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 0;
+    margin-bottom: 0;
 }
 
 .filter-tab {
-    padding: 12px 30px;
+    padding: 14px 35px;
     border: none;
-    background: #f8f9fa;
-    border-radius: 8px 8px 0 0;
+    background: var(--bg-light);
+    border-radius: 0;
     cursor: pointer;
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--text-light);
     transition: var(--transition);
     position: relative;
+    border-bottom: 3px solid transparent;
+}
+
+.filter-tab:first-child {
+    border-radius: 10px 0 0 0;
+}
+
+.filter-tab:last-child {
+    border-radius: 0 10px 0 0;
 }
 
 .filter-tab:hover {
     color: var(--primary-color);
-    background: #f8f9fa;
+    background: var(--bg-light);
 }
 
 .filter-tab.active {
-    background: var(--primary-color);
-    color: white;
+    background: white;
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
 }
 
 .filter-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: var(--primary-color);
+    display: none;
 }
 
 .gallery-filter {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 12px;
     margin-bottom: 40px;
     flex-wrap: wrap;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
+    padding: 25px 20px;
+    background: white;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid var(--border-color);
 }
 
 .filter-btn {
-    padding: 10px 25px;
-    border: 2px solid var(--border-color);
-    background: transparent;
-    border-radius: 25px;
+    padding: 10px 22px;
+    border: none;
+    background: var(--bg-light);
+    border-radius: 20px;
     cursor: pointer;
     font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-light);
     transition: var(--transition);
 }
 
-.filter-btn:hover,
+.filter-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
 .filter-btn.active {
     background: var(--primary-color);
-    border-color: var(--primary-color);
     color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Mosaic Grid Layout */
@@ -539,16 +552,22 @@ html.snap-scroll section {
     }
 
     .filter-tabs {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+    }
+
+    .filter-tab {
+        padding: 12px 25px;
+        font-size: 0.9rem;
     }
 
     .gallery-filter {
-        gap: 10px;
+        gap: 8px;
+        padding: 20px 15px;
     }
 
     .filter-btn {
         padding: 8px 16px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -1188,17 +1207,20 @@ html.snap-scroll .footer {
 
     /* Filter Tabs */
     .filter-tabs {
-        gap: 5px;
+        gap: 0;
     }
 
     .filter-tab {
-        padding: 10px 15px;
+        padding: 10px 20px;
         font-size: 0.85rem;
+        flex: 1;
+        text-align: center;
     }
 
     .gallery-filter {
         padding: 15px 10px;
-        gap: 8px;
+        gap: 6px;
+        border-radius: 0 0 8px 8px;
     }
 
     .gallery-grid {
