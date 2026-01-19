@@ -10,9 +10,9 @@ const CONFIG = {
     outputDir: path.join(__dirname, '../images/gallery'),
     metadataPath: path.join(__dirname, '../data/metadata.json'),
     supportedFormats: ['.jpg', '.jpeg', '.png', '.webp', '.tiff', '.heic'],
-    maxWidth: 6000,
-    maxHeight: 6000,
-    quality: 85
+    maxWidth: 1600,
+    maxHeight: 1600,
+    quality: 82
 };
 
 // ===== Helper Functions =====

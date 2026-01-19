@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "add-photos": "node scripts/add-photos.js"
+    "add-photos": "node scripts/add-photos.js",
+    "resize-images": "node scripts/resize-images.js"
   },
   "keywords": [],
   "author": "",
