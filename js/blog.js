@@ -2,8 +2,8 @@
 // Handles markdown-based blog functionality
 
 const BlogSystem = {
-    postsIndexUrl: 'posts/index.json',
-    postsDir: 'posts/',
+    postsIndexUrl: './posts/index.json',
+    postsDir: './posts/',
 
     // Format date to English
     formatDate(dateStr) {
