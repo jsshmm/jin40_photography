@@ -2,7 +2,7 @@
 title: Mastering Golden Hour Photography
 date: 2024-03-15
 category: Tips
-thumbnail: https://picsum.photos/600/400?random=30
+thumbnail: images/gallery/2024-thailand/DSCF3656.webp
 excerpt: Learn how to capture stunning landscape photos during sunrise and sunset.
 ---
 
@@ -14,7 +14,7 @@ Golden hour refers to the period shortly after sunrise and before sunset. During
 
 Typically, golden hour lasts about an hour before and after the sun rises or sets. During this time, shadows are longer, the sky displays rich colors, and the overall feel is soft and warm.
 
-![Sunset example](https://picsum.photos/800/500?random=41)
+![Sunset example](images/gallery/2024-thailand/DSCF3671.webp)
 
 ## Tips for Shooting
 
@@ -32,7 +32,7 @@ Typically, golden hour lasts about an hour before and after the sun rises or set
 
 Right after golden hour (after sunset) or before (before sunrise), there's a period called "blue hour." The sky turns a deep blue during this time, perfect for city nightscapes or moody landscape photos.
 
-![Blue hour example](https://picsum.photos/800/500?random=42)
+![Blue hour example](images/gallery/2024-thailand/DSCF3692.webp)
 
 ## Conclusion
 

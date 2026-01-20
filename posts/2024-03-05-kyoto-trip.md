@@ -2,7 +2,7 @@
 title: A Week in Kyoto, Japan
 date: 2024-03-05
 category: Travel
-thumbnail: https://picsum.photos/600/400?random=32
+thumbnail: images/gallery/2024-thailand/DSCF3249.webp
 excerpt: A photo journal of my week-long trip exploring the ancient capital of Japan.
 ---
 
@@ -16,7 +16,7 @@ The first two days were spent exploring Kyoto's famous Higashiyama district.
 - **Sannenzaka & Ninenzaka**: The traditional streets had an incredible atmosphere
 - **Yasaka Shrine**: The lanterns at dusk were beautiful
 
-![Kiyomizu-dera](https://picsum.photos/800/500?random=60)
+![Kiyomizu-dera](images/gallery/2024-thailand/DSCF3257.webp)
 
 ## Day 3-4: Arashiyama
 
@@ -32,7 +32,7 @@ Fushimi Inari Shrine with its thousands of red torii gates. The round trip to th
 
 On the last day, I enjoyed delicious food at Nishiki Market and waited in Gion hoping to photograph geishas.
 
-![Gion at night](https://picsum.photos/800/500?random=61)
+![Gion at night](images/gallery/2024-thailand/DSCF3338.webp)
 
 ## My Gear
 

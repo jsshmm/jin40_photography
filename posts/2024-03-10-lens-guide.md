@@ -2,7 +2,7 @@
 title: Lens Selection Guide for Travel Photographers
 date: 2024-03-10
 category: Gear
-thumbnail: https://picsum.photos/600/400?random=31
+thumbnail: images/gallery/2024-thailand/DSCF3127.webp
 excerpt: Find the perfect lens setup for your travel photography adventures.
 ---
 
@@ -34,7 +34,7 @@ When selecting lenses for travel, consider these factors:
 - Pros: Lightweight with excellent image quality
 - Cons: Less flexible with focal lengths
 
-![Lens comparison](https://picsum.photos/800/500?random=50)
+![Lens comparison](images/gallery/2024-thailand/DSCF3143.webp)
 
 ## Conclusion
 
