@@ -6,7 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "add-photos": "node scripts/add-photos.js",
     "resize-images": "node scripts/resize-images.js",
-    "build-blog": "node scripts/build-blog.js"
+    "build-blog": "node scripts/build-blog.js",
+    "deploy": "git add . && git commit && git push",
+    "deploy-quick": "git add . && git commit -m 'Update site' && git push"
   },
   "keywords": [],
   "author": "",
