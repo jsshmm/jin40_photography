@@ -51,13 +51,21 @@ function generateSitemap() {
 
     // Add blog posts
     blogPosts.forEach(post => {
+        // Handle localized title (prefer EN, fallback to first available key)
+        let displayTitle = 'Untitled';
+        if (typeof post.title === 'string') {
+            displayTitle = post.title;
+        } else if (typeof post.title === 'object') {
+            displayTitle = post.title.en || Object.values(post.title)[0] || 'Untitled';
+        }
+
         xml += '    <url>\n';
         xml += `        <loc>${SITE_URL}/post.html?slug=${post.slug}</loc>\n`;
         xml += `        <lastmod>${post.date}</lastmod>\n`;
         xml += `        <changefreq>monthly</changefreq>\n`;
         xml += `        <priority>0.7</priority>\n`;
         xml += '    </url>\n';
-        console.log(`  ✓ Added: ${post.title} (${post.slug})`);
+        console.log(`  ✓ Added: ${displayTitle} (${post.slug})`);
     });
 
     xml += '</urlset>\n';

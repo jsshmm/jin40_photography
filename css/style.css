@@ -1,4 +1,6 @@
 /* ===== CSS Reset & Variables ===== */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #e74c3c;
@@ -31,7 +33,7 @@ html.snap-scroll {
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     color: var(--text-color);
     background-color: var(--bg-color);
     line-height: 1.6;
@@ -122,6 +124,70 @@ ul {
 .nav-menu a:hover::after,
 .nav-menu a.active::after {
     width: 100%;
+}
+
+/* ===== Language Switcher ===== */
+.lang-switcher {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.lang-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.lang-btn:hover {
+    color: var(--secondary-color);
+}
+
+.lang-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 120px;
+    background: white;
+    box-shadow: var(--shadow-lg);
+    border-radius: 8px;
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+.lang-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.lang-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.lang-option:hover,
+.lang-option.active {
+    background: var(--bg-light);
+    color: var(--secondary-color);
 }
 
 .nav-toggle {

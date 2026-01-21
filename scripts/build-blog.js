@@ -56,6 +56,9 @@ function getSlugFromFilename(filename) {
 /**
  * Main build function
  */
+/**
+ * Main build function
+ */
 function buildBlogIndex() {
     console.log('Building blog index...\n');
 
@@ -65,46 +68,72 @@ function buildBlogIndex() {
         process.exit(1);
     }
 
-    // Get all .md files (exclude template files starting with _)
-    const files = fs.readdirSync(POSTS_DIR)
-        .filter(file => file.endsWith('.md') && !file.startsWith('_'));
+    // Get all directories (excluding those starting with _)
+    const items = fs.readdirSync(POSTS_DIR, { withFileTypes: true });
+    const directories = items
+        .filter(item => item.isDirectory() && !item.name.startsWith('_'))
+        .map(item => item.name);
 
-    console.log(`Found ${files.length} markdown file(s)\n`);
+    console.log(`Found ${directories.length} post directory(s)\n`);
 
     const posts = [];
 
-    for (const file of files) {
-        const filePath = path.join(POSTS_DIR, file);
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const metadata = parseFrontmatter(content);
+    for (const slug of directories) {
+        const postDir = path.join(POSTS_DIR, slug);
+        const supportedLangs = ['en', 'ko', 'jp'];
 
-        if (!metadata) {
-            console.warn(`Warning: No frontmatter found in ${file}, skipping...`);
+        let baseMetadata = null;
+        let titleObj = {};
+        let excerptObj = {};
+
+        // Find available languages
+        const availableLangs = supportedLangs.filter(lang =>
+            fs.existsSync(path.join(postDir, `${lang}.md`))
+        );
+
+        if (availableLangs.length === 0) {
+            console.warn(`Warning: No markdown files found in ${slug}, skipping...`);
             continue;
         }
 
-        const slug = getSlugFromFilename(file);
+        // Process each language file
+        for (const lang of availableLangs) {
+            const content = fs.readFileSync(path.join(postDir, `${lang}.md`), 'utf-8');
+            const metadata = parseFrontmatter(content);
 
-        // Validate required fields
-        const requiredFields = ['title', 'date', 'category', 'thumbnail', 'excerpt'];
-        const missingFields = requiredFields.filter(field => !metadata[field]);
+            if (!metadata) continue;
 
-        if (missingFields.length > 0) {
-            console.warn(`Warning: ${file} is missing fields: ${missingFields.join(', ')}`);
+            // Use first available metadata as base (usually 'en' if available)
+            if (!baseMetadata) {
+                baseMetadata = metadata;
+            }
+
+            // Aggregate localized strings
+            titleObj[lang] = metadata.title || '';
+            excerptObj[lang] = metadata.excerpt || '';
+
+            // If base metadata was set from a non-EN file but now we have EN, 
+            // maybe update base metadata to EN for consistency? 
+            // For now, first found is fine.
+        }
+
+        if (!baseMetadata) {
+            console.warn(`Warning: Failed to parse metadata for ${slug}, skipping...`);
+            continue;
         }
 
         const post = {
             slug,
-            title: metadata.title || 'Untitled',
-            date: metadata.date || '',
-            category: metadata.category || 'General',
-            thumbnail: metadata.thumbnail || '',
-            excerpt: metadata.excerpt || ''
+            title: titleObj,
+            excerpt: excerptObj,
+            date: baseMetadata.date || '',
+            category: baseMetadata.category || 'General',
+            thumbnail: baseMetadata.thumbnail || ''
         };
 
         posts.push(post);
-        console.log(`  ✓ ${file}`);
-        console.log(`    Title: ${post.title}`);
+        console.log(`  ✓ ${slug}`);
+        console.log(`    Languages: ${availableLangs.join(', ')}`);
         console.log(`    Date: ${post.date}\n`);
     }
 

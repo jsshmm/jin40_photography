@@ -1,0 +1,161 @@
+{
+    "nav": {
+        "home": {
+            "en": "Home",
+            "ko": "홈",
+            "jp": "ホーム"
+        },
+        "gallery": {
+            "en": "Gallery",
+            "ko": "갤러리",
+            "jp": "ギャラリー"
+        },
+        "blog": {
+            "en": "Blog",
+            "ko": "블로그",
+            "jp": "ブログ"
+        }
+    },
+    "hero": {
+        "title_prefix": {
+            "en": "Hello, I'm ",
+            "ko": "안녕하세요, 저는 ",
+            "jp": "こんにちは、私は"
+        },
+        "title_highlight": {
+            "en": "jin40_",
+            "ko": "jin40_",
+            "jp": "jin40_"
+        },
+        "title_suffix": {
+            "en": ", a Photographer",
+            "ko": "입니다",
+            "jp": "、写真家です"
+        },
+        "description": {
+            "en": "Capturing moments that matter",
+            "ko": "소중한 순간들을 기록합니다",
+            "jp": "大切な瞬間を切り取ります"
+        },
+        "cta": {
+            "en": "View My Work",
+            "ko": "작품 보기",
+            "jp": "作品を見る"
+        }
+    },
+    "about": {
+        "title": {
+            "en": "About Me",
+            "ko": "소개",
+            "jp": "私について"
+        },
+        "subtitle": {
+            "en": "Just a hobby photographer",
+            "ko": "취미 사진가",
+            "jp": "趣味の写真家"
+        },
+        "p1": {
+            "en": "Based in Seoul, capturing moments that inspire me. I shoot with a Fujifilm X-T30 and a Ricoh GR IIIx.",
+            "ko": "서울을 기반으로 영감을 주는 순간들을 담고 있습니다. 후지필름 X-T30과 리코 GR IIIx를 주로 사용합니다.",
+            "jp": "ソウルを拠点に、インスピレーションを受ける瞬間を撮影しています。主にFujifilm X-T30とRicoh GR IIIxを使用しています。"
+        },
+        "p2": {
+            "en": "This portfolio showcases photographs from my travels across various countries. Each image tells a story from the places I've explored.",
+            "ko": "이 포트폴리오는 여러 나라를 여행하며 찍은 사진들을 소개합니다. 각 사진에는 제가 탐험한 장소들의 이야기가 담겨 있습니다.",
+            "jp": "このポートフォリオでは、様々な国を旅して撮影した写真を紹介しています。各画像は、私が探索した場所の物語を語っています。"
+        }
+    },
+    "featured": {
+        "title": {
+            "en": "Featured Works",
+            "ko": "대표 작품",
+            "jp": "主要作品"
+        },
+        "view_more": {
+            "en": "View More",
+            "ko": "더 보기",
+            "jp": "もっと見る"
+        }
+    },
+    "gallery": {
+        "title": {
+            "en": "Gallery",
+            "ko": "갤러리",
+            "jp": "ギャラリー"
+        },
+        "subtitle": {
+            "en": "A collection of moments I've captured",
+            "ko": "제가 담은 순간들의 모음",
+            "jp": "私が捉えた瞬間のコレクション"
+        },
+        "filter_country": {
+            "en": "Country",
+            "ko": "국가",
+            "jp": "国"
+        },
+        "filter_year": {
+            "en": "Year",
+            "ko": "연도",
+            "jp": "年"
+        },
+        "load_more": {
+            "en": "Load More",
+            "ko": "더 불러오기",
+            "jp": "もっと読み込む"
+        }
+    },
+    "blog": {
+        "title": {
+            "en": "Blog",
+            "ko": "블로그",
+            "jp": "ブログ"
+        },
+        "subtitle": {
+            "en": "Stories about photography and life",
+            "ko": "사진과 삶에 대한 이야기",
+            "jp": "写真と人生についての物語"
+        },
+        "read_more": {
+            "en": "Read more →",
+            "ko": "더 읽기 →",
+            "jp": "続きを読む →"
+        },
+        "loading": {
+            "en": "Loading posts...",
+            "ko": "포스트 불러오는 중...",
+            "jp": "投稿を読み込んでいます..."
+        },
+        "empty": {
+            "en": "Coming soon! Stay tuned for upcoming posts.",
+            "ko": "준비 중입니다! 새로운 글을 기대해주세요.",
+            "jp": "近日公開！投稿をお待ちください。"
+        },
+        "back": {
+            "en": "← Back to Blog",
+            "ko": "← 목록으로",
+            "jp": "← ブログに戻る"
+        }
+    },
+    "footer": {
+        "tagline": {
+            "en": "Capturing moments that matter",
+            "ko": "소중한 순간들을 기록합니다",
+            "jp": "大切な瞬間を切り取ります"
+        },
+        "follow": {
+            "en": "Follow Me",
+            "ko": "팔로우",
+            "jp": "フォロー"
+        },
+        "contact": {
+            "en": "Contact",
+            "ko": "연락처",
+            "jp": "お問い合わせ"
+        },
+        "rights": {
+            "en": "All rights reserved.",
+            "ko": "All rights reserved.",
+            "jp": "All rights reserved."
+        }
+    }
+}

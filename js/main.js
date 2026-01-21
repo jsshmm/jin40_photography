@@ -298,6 +298,117 @@ document.querySelectorAll('.featured-item').forEach(item => {
     });
 });
 
+// ===== Translation System =====
+const TranslationSystem = {
+    currentLang: localStorage.getItem('selectedLang') || 'en',
+    translations: {},
+
+    async init() {
+        try {
+            const response = await fetch('data/translations.json');
+            this.translations = await response.json();
+
+            this.setupLanguageSwitcher();
+            this.applyTranslations(this.currentLang);
+
+            // Dispatch event for other scripts (like blog.js)
+            window.dispatchEvent(new CustomEvent('languageChanged', {
+                detail: { lang: this.currentLang }
+            }));
+        } catch (error) {
+            console.error('Failed to load translations:', error);
+        }
+    },
+
+    setupLanguageSwitcher() {
+        const langBtn = document.querySelector('.lang-btn');
+        const langDropdown = document.querySelector('.lang-dropdown');
+        const langOptions = document.querySelectorAll('.lang-option');
+
+        if (!langBtn || !langDropdown) return;
+
+        // Set initial active state
+        this.updateActiveLangOption(this.currentLang);
+
+        // Toggle dropdown
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            langDropdown.classList.remove('active');
+        });
+
+        // Handle language selection
+        langOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                const lang = e.currentTarget.dataset.lang;
+                this.setLanguage(lang);
+            });
+        });
+    },
+
+    setLanguage(lang) {
+        this.currentLang = lang;
+        localStorage.setItem('selectedLang', lang);
+
+        // Update UI
+        this.updateActiveLangOption(lang);
+        this.applyTranslations(lang);
+
+        // Dispatch event
+        window.dispatchEvent(new CustomEvent('languageChanged', {
+            detail: { lang: lang }
+        }));
+    },
+
+    updateActiveLangOption(lang) {
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            if (opt.dataset.lang === lang) {
+                opt.classList.add('active');
+                // Update button text if needed, or just icon
+                // const langLabel = opt.querySelector('span').textContent;
+                // document.querySelector('.current-lang').textContent = langLabel;
+            } else {
+                opt.classList.remove('active');
+            }
+        });
+    },
+
+    applyTranslations(lang) {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const keys = key.split('.');
+            let value = this.translations;
+
+            for (const k of keys) {
+                value = value?.[k];
+            }
+
+            const translatedText = value?.[lang];
+            if (translatedText) {
+                // If element has child nodes that are not text (like span inside h1), handle carefully
+                // For simple text replacement:
+                if (el.children.length === 0) {
+                    el.textContent = translatedText;
+                } else {
+                    // Special handling for mixed content (like Header "Hello, I'm [span]...")
+                    // We might need specific logic or data-i18n-html
+                    // For now, let's assume specific structure or use innerHTML if safe
+                    // Better approach: separate text nodes with spans and simple IDs
+                }
+            }
+        });
+    },
+};
+
+// Initialize Translation System
+document.addEventListener('DOMContentLoaded', () => {
+    TranslationSystem.init();
+});
+
 // ===== Console Welcome Message =====
 console.log('%c Photography Portfolio ', 'background: #2c3e50; color: white; padding: 10px 20px; font-size: 16px;');
 console.log('Thanks for checking out my portfolio!');

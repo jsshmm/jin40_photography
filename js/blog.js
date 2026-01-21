@@ -1,15 +1,24 @@
 // ===== Blog System =====
 // Handles markdown-based blog functionality
 
+// ===== Blog System =====
+// Handles markdown-based blog functionality
+
 const BlogSystem = {
     postsIndexUrl: './posts/index.json',
     postsDir: './posts/',
+    currentLang: localStorage.getItem('selectedLang') || 'en',
 
-    // Format date to English
+    // Format date based on language
     formatDate(dateStr) {
         const date = new Date(dateStr);
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
+
+        let locale = 'en-US';
+        if (this.currentLang === 'ko') locale = 'ko-KR';
+        if (this.currentLang === 'jp') locale = 'ja-JP';
+
+        return date.toLocaleDateString(locale, options);
     },
 
     // Parse frontmatter from markdown
@@ -40,13 +49,9 @@ const BlogSystem = {
     // Fetch posts index
     async fetchPostsIndex() {
         try {
-            console.log('Fetching posts from:', this.postsIndexUrl);
             const response = await fetch(this.postsIndexUrl);
-            console.log('Response status:', response.status);
             if (!response.ok) throw new Error(`Failed to fetch posts index: ${response.status}`);
-            const data = await response.json();
-            console.log('Posts loaded:', data.length);
-            return data;
+            return await response.json();
         } catch (error) {
             console.error('Error fetching posts index:', error);
             return [];
@@ -56,13 +61,32 @@ const BlogSystem = {
     // Fetch single post markdown
     async fetchPost(slug) {
         try {
-            const response = await fetch(`${this.postsDir}${slug}.md`);
+            // Try fetching localized version first (e.g., posts/slug/ko.md)
+            let filename = `${slug}/${this.currentLang}.md`;
+
+            let response = await fetch(`${this.postsDir}${filename}`);
+
+            // Fallback to English (or first available) if localized not found
+            // This logic relies on user ensuring at least one language exists or explicit fallbacks.
+            // A robust fallback could be trying 'en.md' explicitly if currentLang fails.
+            if (!response.ok && this.currentLang !== 'en') {
+                response = await fetch(`${this.postsDir}${slug}/en.md`);
+            }
+
+            // If still not found, throw error
             if (!response.ok) throw new Error('Failed to fetch post');
             return await response.text();
         } catch (error) {
             console.error('Error fetching post:', error);
             return null;
         }
+    },
+
+    // Get localized string from post object
+    getLocalized(obj, key) {
+        if (!obj[key]) return '';
+        if (typeof obj[key] === 'string') return obj[key];
+        return obj[key][this.currentLang] || obj[key]['en'] || '';
     },
 
     // Render blog list (for blog.html)
@@ -73,24 +97,35 @@ const BlogSystem = {
 
         if (!blogGrid) return;
 
+        // Reset grid
+        blogGrid.innerHTML = '';
+        if (blogLoading) blogLoading.style.display = 'block';
+        if (blogEmpty) blogEmpty.style.display = 'none';
+
         try {
             const posts = await this.fetchPostsIndex();
 
             // Sort by date (newest first)
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            blogLoading.style.display = 'none';
+            if (blogLoading) blogLoading.style.display = 'none';
 
             if (posts.length === 0) {
-                blogEmpty.style.display = 'block';
+                if (blogEmpty) blogEmpty.style.display = 'block';
                 return;
             }
 
-            blogGrid.innerHTML = posts.map(post => `
+            const readMoreText = 'Read more &rarr;';
+
+            blogGrid.innerHTML = posts.map(post => {
+                const title = this.getLocalized(post, 'title');
+                const excerpt = this.getLocalized(post, 'excerpt');
+
+                return `
                 <article class="blog-card">
                     <div class="blog-image">
                         <a href="post.html?slug=${post.slug}">
-                            <img src="${post.thumbnail}" alt="${post.title}"
+                            <img src="${post.thumbnail}" alt="${title}"
                                  onerror="this.src='https://picsum.photos/600/400?random=${Math.random()}'">
                         </a>
                         <span class="blog-category">${post.category}</span>
@@ -99,12 +134,12 @@ const BlogSystem = {
                         <div class="blog-meta">
                             <span class="blog-date">${this.formatDate(post.date)}</span>
                         </div>
-                        <h3><a href="post.html?slug=${post.slug}">${post.title}</a></h3>
-                        <p>${post.excerpt}</p>
-                        <a href="post.html?slug=${post.slug}" class="read-more">Read more &rarr;</a>
+                        <h3><a href="post.html?slug=${post.slug}">${title}</a></h3>
+                        <p>${excerpt}</p>
+                        <a href="post.html?slug=${post.slug}" class="read-more">${readMoreText}</a>
                     </div>
                 </article>
-            `).join('');
+            `}).join('');
 
             // Add fade-in animation
             blogGrid.querySelectorAll('.blog-card').forEach((card, index) => {
@@ -113,9 +148,11 @@ const BlogSystem = {
             });
 
         } catch (error) {
-            blogLoading.style.display = 'none';
-            blogEmpty.innerHTML = '<p>Error loading posts. Please try again later.</p>';
-            blogEmpty.style.display = 'block';
+            if (blogLoading) blogLoading.style.display = 'none';
+            if (blogEmpty) {
+                blogEmpty.innerHTML = '<p>Error loading posts.</p>';
+                blogEmpty.style.display = 'block';
+            }
         }
     },
 
@@ -129,7 +166,7 @@ const BlogSystem = {
         const metaTags = {
             // Basic meta
             'description': metadata.excerpt || metadata.title,
-            'keywords': `${metadata.title}, 사진, photography, ${metadata.category}, 여행, 일본, 고양이`,
+            'keywords': `${metadata.title}, photography, ${metadata.category}`,
 
             // Open Graph
             'og:title': metadata.title,
@@ -143,11 +180,6 @@ const BlogSystem = {
             'twitter:title': metadata.title,
             'twitter:description': metadata.excerpt || metadata.title,
             'twitter:image': thumbnailUrl,
-
-            // Article specific
-            'article:published_time': metadata.date,
-            'article:author': 'jin40_photography',
-            'article:section': metadata.category
         };
 
         // Update existing or create new meta tags
@@ -163,62 +195,12 @@ const BlogSystem = {
             }
             meta.setAttribute('content', content);
         });
-
-        // Update canonical URL
-        let canonical = document.querySelector('link[rel="canonical"]');
-        if (!canonical) {
-            canonical = document.createElement('link');
-            canonical.setAttribute('rel', 'canonical');
-            document.head.appendChild(canonical);
-        }
-        canonical.setAttribute('href', postUrl);
-
-        // Add JSON-LD structured data for better SEO
-        this.addStructuredData(metadata, slug, postUrl, thumbnailUrl);
-    },
-
-    // Add structured data (JSON-LD) for rich snippets
-    addStructuredData(metadata, slug, postUrl, thumbnailUrl) {
-        // Remove existing structured data if any
-        const existingScript = document.querySelector('script[type="application/ld+json"]');
-        if (existingScript) {
-            existingScript.remove();
-        }
-
-        const structuredData = {
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            "headline": metadata.title,
-            "description": metadata.excerpt || metadata.title,
-            "image": thumbnailUrl,
-            "datePublished": metadata.date,
-            "dateModified": metadata.date,
-            "author": {
-                "@type": "Person",
-                "name": "jin40_photography"
-            },
-            "publisher": {
-                "@type": "Organization",
-                "name": "jin40_photography",
-                "logo": {
-                    "@type": "ImageObject",
-                    "url": "https://jin40photo.com/images/hero/hero-photo.webp"
-                }
-            },
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": postUrl
-            }
-        };
-
-        const script = document.createElement('script');
-        script.type = 'application/ld+json';
-        script.textContent = JSON.stringify(structuredData);
-        document.head.appendChild(script);
     },
 
     // Render single post (for post.html)
     async renderPost() {
+        // ... (Similar to original but force re-fetch if language changes)
+        // Accessing DOM elements locally to ensure fresh reference
         const postTitle = document.getElementById('post-title');
         const postCategory = document.getElementById('post-category');
         const postDate = document.getElementById('post-date');
@@ -226,109 +208,62 @@ const BlogSystem = {
         const postBody = document.getElementById('post-body');
         const postLoading = document.getElementById('post-loading');
         const postError = document.getElementById('post-error');
-        const relatedPosts = document.getElementById('related-posts');
         const relatedGrid = document.getElementById('related-grid');
 
         if (!postBody) return;
 
-        // Get slug from URL
         const urlParams = new URLSearchParams(window.location.search);
         const slug = urlParams.get('slug');
 
         if (!slug) {
-            postLoading.style.display = 'none';
-            postError.style.display = 'block';
+            if (postLoading) postLoading.style.display = 'none';
+            if (postError) postError.style.display = 'block';
             return;
         }
 
         try {
-            // Fetch post content
             const markdown = await this.fetchPost(slug);
 
             if (!markdown) {
-                postLoading.style.display = 'none';
-                postError.style.display = 'block';
+                if (postLoading) postLoading.style.display = 'none';
+                if (postError) postError.style.display = 'block';
                 return;
             }
 
-            // Parse frontmatter and content
             const { metadata, content } = this.parseFrontmatter(markdown);
 
-            // Update page elements
-            postTitle.textContent = metadata.title || 'Untitled';
-            postCategory.textContent = metadata.category || 'General';
-            postDate.textContent = metadata.date ? this.formatDate(metadata.date) : '';
+            if (postTitle) postTitle.textContent = metadata.title || 'Untitled';
+            if (postCategory) postCategory.textContent = metadata.category || 'General';
+            if (postDate) postDate.textContent = metadata.date ? this.formatDate(metadata.date) : '';
 
-            if (metadata.thumbnail) {
+            if (postThumbnail && metadata.thumbnail) {
                 postThumbnail.src = metadata.thumbnail;
                 postThumbnail.alt = metadata.title;
             }
 
-            // Update page title
             document.title = `${metadata.title} - jin40_photography`;
-
-            // Update meta tags for SEO and social sharing
             this.updateMetaTags(metadata, slug);
 
-            // Render markdown content
             if (typeof marked !== 'undefined') {
-                marked.setOptions({
-                    breaks: true,
-                    gfm: true,
-                    // Allow HTML tags in markdown (for iframe, etc.)
-                    // marked.js by default preserves HTML in the output
-                });
+                marked.setOptions({ breaks: true, gfm: true });
                 postBody.innerHTML = marked.parse(content);
             } else {
-                // Fallback: simple markdown rendering
                 postBody.innerHTML = this.simpleMarkdownRender(content);
             }
 
-            postLoading.style.display = 'none';
+            if (postLoading) postLoading.style.display = 'none';
 
-            // Render related posts
-            await this.renderRelatedPosts(slug, relatedPosts, relatedGrid);
+            // IMPORTANT: Render related posts with correct language
+            const relatedContainer = document.getElementById('related-posts');
+            if (relatedContainer && relatedGrid) {
+                this.renderRelatedPosts(slug, relatedContainer, relatedGrid);
+            }
 
         } catch (error) {
             console.error('Error rendering post:', error);
-            postLoading.style.display = 'none';
-            postError.style.display = 'block';
+            if (postLoading) postLoading.style.display = 'none';
+            if (postError) postError.style.display = 'block';
         }
-    },
-
-    // Simple markdown renderer (fallback)
-    simpleMarkdownRender(markdown) {
-        return markdown
-            // Headers
-            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-            // Bold
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Italic
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            // Images
-            .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">')
-            // Links
-            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
-            // Blockquotes
-            .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
-            // Lists
-            .replace(/^- (.*$)/gm, '<li>$1</li>')
-            .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-            // Paragraphs
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/^(.+)$/gm, '<p>$1</p>')
-            // Clean up
-            .replace(/<p><\/p>/g, '')
-            .replace(/<p>(<h[1-6]>)/g, '$1')
-            .replace(/(<\/h[1-6]>)<\/p>/g, '$1')
-            .replace(/<p>(<blockquote>)/g, '$1')
-            .replace(/(<\/blockquote>)<\/p>/g, '$1')
-            .replace(/<p>(<ul>)/g, '$1')
-            .replace(/(<\/ul>)<\/p>/g, '$1')
-            .replace(/<p>(<img)/g, '$1')
-            .replace(/(>)<\/p>/g, '$1');
     },
 
     // Render related posts
@@ -344,36 +279,64 @@ const BlogSystem = {
 
             if (otherPosts.length === 0) return;
 
-            grid.innerHTML = otherPosts.map(post => `
+            grid.innerHTML = otherPosts.map(post => {
+                const title = this.getLocalized(post, 'title');
+                return `
                 <a href="post.html?slug=${post.slug}" class="related-card">
-                    <img src="${post.thumbnail}" alt="${post.title}"
+                    <img src="${post.thumbnail}" alt="${title}"
                          onerror="this.src='https://picsum.photos/300/200?random=${Math.random()}'">
-                    <h4>${post.title}</h4>
+                    <h4>${title}</h4>
                 </a>
-            `).join('');
+            `}).join('');
 
             container.style.display = 'block';
-
         } catch (error) {
             console.error('Error rendering related posts:', error);
+        }
+    },
+
+    // Simple markdown reference (same as before)
+    simpleMarkdownRender(markdown) {
+        return markdown
+            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">')
+            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+            .replace(/\n/g, '<br>');
+    },
+
+    // Refresh content on language change
+    onLanguageChange(lang) {
+        this.currentLang = lang;
+        const currentPage = window.location.pathname.split('/').pop();
+
+        if (currentPage === 'blog.html' || currentPage === 'blog' || currentPage === '') {
+            this.renderBlogList();
+        } else if (currentPage === 'post.html' || currentPage === 'post') {
+            this.renderPost();
         }
     },
 
     // Initialize based on current page
     init() {
         const currentPage = window.location.pathname.split('/').pop();
-        console.log('BlogSystem init - currentPage:', currentPage);
 
-        // Check for blog page (with or without .html extension)
+        // Listen for global language change event
+        window.addEventListener('languageChanged', (e) => {
+            this.onLanguageChange(e.detail.lang);
+        });
+
+        // Check for blog page
         if (currentPage === 'blog.html' || currentPage === 'blog' || currentPage === '') {
-            const blogGrid = document.getElementById('blog-grid');
-            console.log('Blog page detected, blogGrid element:', blogGrid ? 'found' : 'not found');
-            if (blogGrid) {
+            if (document.getElementById('blog-grid')) {
                 this.renderBlogList();
             }
         }
 
-        // Check for post page (with or without .html extension)
+        // Check for post page
         if (currentPage === 'post.html' || currentPage === 'post') {
             this.renderPost();
         }

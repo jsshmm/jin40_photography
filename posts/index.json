@@ -1,10 +1,18 @@
 [
   {
     "slug": "2026-01-21-ainoshima-cats",
-    "title": "아이노시마의 고양이들",
+    "title": {
+      "en": "The Cats of Ainoshima",
+      "ko": "아이노시마의 고양이들",
+      "jp": "相島の猫たち"
+    },
+    "excerpt": {
+      "en": "Summer 2023, Ainoshima, Fukuoka",
+      "ko": "2023년 여름, 후쿠오카 아이노시마",
+      "jp": "2023年夏、福岡・相島"
+    },
     "date": "2026-01-20",
     "category": "Travel",
-    "thumbnail": "images/gallery/2023-japan/photo38.webp",
-    "excerpt": "2023년 여름, 후쿠오카 아이노시마"
+    "thumbnail": "images/gallery/2023-japan/photo38.webp"
   }
 ]
