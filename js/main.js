@@ -341,6 +341,13 @@ const TranslationSystem = {
             langDropdown.classList.remove('active');
         });
 
+        // Close dropdown on scroll
+        window.addEventListener('scroll', () => {
+            if (langDropdown.classList.contains('active')) {
+                langDropdown.classList.remove('active');
+            }
+        }, { passive: true });
+
         // Handle language selection
         langOptions.forEach(option => {
             option.addEventListener('click', (e) => {
