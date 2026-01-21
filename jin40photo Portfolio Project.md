@@ -24,6 +24,7 @@ jin40photo/
 │   └── blog.js         # 블로그 기능
 ├── images/
 │   ├── gallery/        # 갤러리 사진
+│   ├── blog/           # 블로그 전용 이미지
 │   ├── hero/           # 히어로 이미지
 │   └── new/            # 새 사진 업로드용 (임시)
 ├── posts/              # 블로그 포스트 (.md 파일)
@@ -60,16 +61,23 @@ images/new/ 폴더에 사진 파일 복사
 ```bash
 npm run add-photos
 ```
-- 국가, 연도 등 정보 입력 프롬프트가 표시됨
-- 자동으로 리사이즈 및 webp 변환
-- `images/gallery/` 폴더로 이동
-- `data/metadata.json` 자동 업데이트
+
+프롬프트에 응답:
+- **Photo type**: [g]allery 또는 [b]log 선택
+  - **Gallery (갤러리용)**: 국가, 연도 입력 → `images/gallery/`로 저장 및 메타데이터 생성
+  - **Blog (블로그용)**: 폴더명 입력 (예: 2026-01-21) → `images/blog/2026-01-21/`로 저장
+
+자동 처리 사항:
+- 리사이즈 (최대 1600x1600)
+- WebP 변환 (품질 82%)
+- EXIF 회전 보정
+- 원본 파일 삭제
 
 ### Step 3: 배포
 ```bash
-git add .
-git commit -m "Add new photos"
-git push
+./deploy.sh "Add new photos"
+# 또는
+npm run deploy-quick
 ```
 
 ---
@@ -106,22 +114,72 @@ excerpt: 블로그 목록에 표시될 요약 문구
 ![이미지 설명](images/gallery/2024-thailand/DSCF3671.webp)
 ```
 
-### Step 3: 빌드 (index.json 자동 생성)
+### Step 3: 블로그 전용 이미지 추가 (선택)
+```bash
+# 블로그에서만 사용할 이미지는 다음 방법 중 하나 선택:
+
+# 방법 1: add-photos 스크립트 사용 (자동 변환)
+npm run add-photos
+# 프롬프트: Photo type - [g]allery or [b]log? → "b" 입력
+# 폴더명 입력: 2026-01-21 (또는 여행명)
+# 결과: images/blog/2026-01-21/photo.webp
+
+# 방법 2: 수동으로 이미지 배치
+# images/blog/2026-01-21/ 폴더에 WebP 형식 이미지 복사
+```
+
+마크다운에서 이미지 참조:
+```markdown
+![사진 설명](images/blog/2026-01-21/photo.webp)
+
+# 캡션 추가
+<figure>
+  <img src="images/blog/2026-01-21/photo.webp" alt="사진 설명">
+  <figcaption>캡션 텍스트</figcaption>
+</figure>
+```
+
+### Step 4: 빌드 (index.json 자동 생성)
 ```bash
 npm run build-blog
 ```
 
-### Step 4: 배포
+### Step 5: 배포
 ```bash
-git add .
-git commit -m "Add new blog post"
-git push
+./deploy.sh "Add new blog post: 포스트 제목"
+# 또는
+npm run deploy-quick
 ```
 
 ---
 
 ## How to Update Site (사이트 업데이트)
 
+### 빠른 배포 방법
+
+#### 방법 1: deploy.sh 스크립트 (추천)
+```bash
+./deploy.sh "변경 내용 설명"
+```
+- 한 명령어로 add, commit, push 수행
+- 커밋 메시지를 자유롭게 지정 가능
+- 예: `./deploy.sh "Add new blog post"`
+
+#### 방법 2: npm run deploy
+```bash
+npm run deploy
+```
+- Git 에디터가 열려서 커밋 메시지 작성
+- 상세한 커밋 메시지 작성 가능
+
+#### 방법 3: npm run deploy-quick
+```bash
+npm run deploy-quick
+```
+- 자동으로 "Update site" 메시지로 커밋
+- 가장 빠른 배포 방법
+
+### 수동 방법
 ```bash
 git add .
 git commit -m "변경 내용 설명"
@@ -142,11 +200,19 @@ npx live-server
 
 ## Scripts Reference (스크립트 목록)
 
+### 사진 및 블로그 관련
 | Command | Script | Description |
 |---------|--------|-------------|
 | `npm run add-photos` | `scripts/add-photos.js` | 새 사진 추가 (리사이즈 + 메타데이터) |
 | `npm run resize-images` | `scripts/resize-images.js` | 기존 이미지 리사이즈 |
 | `npm run build-blog` | `scripts/build-blog.js` | 블로그 index.json 자동 생성 |
+
+### 배포 관련
+| Command | Description |
+|---------|-------------|
+| `./deploy.sh "메시지"` | 한 명령어로 배포 (커밋 메시지 지정) |
+| `npm run deploy` | 에디터로 커밋 메시지 작성 후 배포 |
+| `npm run deploy-quick` | "Update site" 메시지로 자동 배포 |
 
 ---
 

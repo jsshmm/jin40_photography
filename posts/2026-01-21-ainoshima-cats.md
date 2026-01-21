@@ -24,11 +24,13 @@ excerpt: 2023년 여름, 후쿠오카 아이노시마
 
 ## 相島
 
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13267.931441047354!2d130.3614815560843!3d33.761108770500854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35418a152a58fba7%3A0x8c33ed5a77c6495e!2z7JWE7J2064W47Iuc66eIIOyErA!5e0!3m2!1sko!2skr!4v1768982942909!5m2!1sko!2skr" width="70%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<div style="text-align: center;">
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13267.931441047354!2d130.3614815560843!3d33.761108770500854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35418a152a58fba7%3A0x8c33ed5a77c6495e!2z7JWE7J2064W47Iuc66eIIOyErA!5e0!3m2!1sko!2skr!4v1768982942909!5m2!1sko!2skr" width="60%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
 
 아이노시마 섬은 후쿠오카 동쪽의 신구 항(新宮漁港)이라는 선착장에서 배를 타고 들어갑니다. 정기적으로 운영되는 페리는 들어가는 시간, 돌아오는 시간대가 정해져 있으니 돌아오는 배를 놓쳐서 섬에 갇히는 일은 없도록 조심해야 합니다.
 
-`심지어는 기상 악화로 인해 돌아오는 배가 취소되는 경우도 간혹 있다고 하네요.
+> 심지어는 기상 악화로 인해 돌아오는 배가 취소되는 경우도 간혹 있다고 하네요.
 
 ![photo3](images/gallery/2023-japan/photo33.webp)
 
@@ -42,7 +44,9 @@ excerpt: 2023년 여름, 후쿠오카 아이노시마
 
 ![photo5](images/gallery/2023-japan/photo54.webp)
 
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1339.4906795558504!2d130.36255324296854!3d33.75601109210157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35418bbfe145b6e3%3A0xe39cf51bdbc8208d!2sRestaurant%20Umi!5e0!3m2!1sko!2skr!4v1768983761774!5m2!1sko!2skr" width="70%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<div style="text-align: center;">
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1339.4906795558504!2d130.36255324296854!3d33.75601109210157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35418bbfe145b6e3%3A0xe39cf51bdbc8208d!2sRestaurant%20Umi!5e0!3m2!1sko!2skr!4v1768983761774!5m2!1sko!2skr" width="60%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
 
 물론 식당에도 고양이가 있었습니다.
 
