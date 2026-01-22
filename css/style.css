@@ -1809,28 +1809,27 @@ html.snap-scroll .footer {
 
     /* Add padding back to all direct children of markdown-body EXCEPT images and figures */
     .markdown-body>*:not(img):not(figure):not(div.post-image) {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     /* Handling for lists to keep bullets aligned nicely */
     .markdown-body ul,
     .markdown-body ol {
-        margin-left: 20px;
-        padding-right: 20px;
+        margin-left: 15px;
+        padding-right: 15px;
         /* "padding-left" is already set in base styles, but we need to ensure container edge spacing */
     }
 
-    /* Ensure images are full width and have no radius */
     /* Ensure images match text content width */
     .markdown-body img {
         border-radius: 8px;
         /* Restore rounded corners */
-        width: calc(100% - 40px);
-        /* 20px margin on each side - matches text padding */
+        width: calc(100% - 30px);
+        /* 15px margin on each side - matches text padding */
         max-width: 100%;
-        margin: 30px 20px;
-        /* 30px top/bottom, 20px left/right */
+        margin: 30px 15px;
+        /* 30px top/bottom, 15px left/right */
         box-shadow: var(--shadow);
         /* Restore shadow */
         display: block;
