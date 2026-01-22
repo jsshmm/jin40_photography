@@ -43,6 +43,14 @@ if (navToggle && navMenu) {
             navMenu.classList.remove('active');
         }
     });
+
+    // Close menu on scroll
+    window.addEventListener('scroll', () => {
+        if (navMenu.classList.contains('active')) {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    }, { passive: true });
 }
 
 // ===== Navbar Scroll Effect =====

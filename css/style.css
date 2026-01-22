@@ -1187,24 +1187,105 @@ html.snap-scroll .footer {
 
     .nav-menu {
         position: fixed;
-        top: 50px;
+        top: 0;
         left: 0;
         right: 0;
+        height: auto;
+        max-height: 80vh;
+        /* Allow seeing content below */
         background: white;
         flex-direction: column;
-        padding: 20px;
+        padding: 80px 20px 30px;
+        /* Top padding for close button/brand area */
         gap: 0;
-        box-shadow: var(--shadow);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         transform: translateY(-150%);
-        transition: var(--transition);
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        z-index: 999;
+        overflow-y: auto;
     }
 
     .nav-menu.active {
         transform: translateY(0);
     }
 
+    .nav-menu li {
+        width: 100%;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .nav-menu.active li {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Staggered animation for menu items */
+    .nav-menu.active li:nth-child(1) {
+        transition-delay: 0.1s;
+    }
+
+    .nav-menu.active li:nth-child(2) {
+        transition-delay: 0.15s;
+    }
+
+    .nav-menu.active li:nth-child(3) {
+        transition-delay: 0.2s;
+    }
+
+    .nav-menu a {
+        display: block;
+        padding: 20px 10px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: center;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: var(--secondary-color);
+        background: var(--bg-light);
+        border-bottom-color: var(--secondary-color);
+    }
+
+    .nav-menu a::after {
+        display: none;
+        /* Remove the underline effect on mobile */
+    }
+
+    /* Mobile Language Switcher */
+    .nav-menu li:last-child {
+        margin-top: 0;
+        border-bottom: none;
+    }
+
+    .lang-switcher {
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        z-index: 1001;
+    }
+
+    .lang-btn {
+        padding: 10px;
+        background: var(--bg-light);
+        border-radius: 50%;
+    }
+
+    .lang-dropdown {
+        top: 100%;
+        right: 0;
+        width: 140px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
     .nav-toggle {
         display: flex;
+        z-index: 1100;
+        /* Ensure above menu */
+        position: relative;
     }
 
     .nav-toggle.active span:nth-child(1) {
