@@ -1822,15 +1822,15 @@ html.snap-scroll .footer {
     }
 
     /* Ensure images are full width and have no radius */
+    /* Ensure images are full width and have no radius */
     .markdown-body img {
         border-radius: 8px;
         /* Restore rounded corners */
-        width: auto;
-        /* Allow auto width to respect max-width */
+        width: calc(100% - 30px);
+        /* 15px margin on each side calculation */
         max-width: 100%;
-        /* Ensure it doesn't overflow */
-        margin: 30px 15px;
-        /* Add side margins */
+        margin: 30px auto;
+        /* Center aligned */
         box-shadow: var(--shadow);
         /* Restore shadow */
         display: block;
