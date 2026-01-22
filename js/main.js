@@ -137,9 +137,9 @@ window.initImageModal = function (selector) {
         currentImageIndex = newIndex;
 
         const img = visibleImages[currentImageIndex];
-        // For gallery items, title is in h4 sibling. For blog, use alt text or none.
+        // For gallery items, title is in h4 sibling. For blog, use empty string.
         const item = img.closest('.gallery-item');
-        const title = item ? (item.querySelector('h4')?.textContent || '') : (img.alt || '');
+        const title = item ? (item.querySelector('h4')?.textContent || '') : '';
 
         modal.classList.add('active');
         modalImg.src = img.src || img.dataset.src;
@@ -156,7 +156,7 @@ window.initImageModal = function (selector) {
         currentImageIndex = (currentImageIndex - 1 + visibleImages.length) % visibleImages.length;
         const img = visibleImages[currentImageIndex];
         const item = img.closest('.gallery-item');
-        const title = item ? (item.querySelector('h4')?.textContent || '') : (img.alt || '');
+        const title = item ? (item.querySelector('h4')?.textContent || '') : '';
         modalImg.src = img.src || img.dataset.src;
         modalCaption.textContent = title;
     }
@@ -165,7 +165,7 @@ window.initImageModal = function (selector) {
         currentImageIndex = (currentImageIndex + 1) % visibleImages.length;
         const img = visibleImages[currentImageIndex];
         const item = img.closest('.gallery-item');
-        const title = item ? (item.querySelector('h4')?.textContent || '') : (img.alt || '');
+        const title = item ? (item.querySelector('h4')?.textContent || '') : '';
         modalImg.src = img.src || img.dataset.src;
         modalCaption.textContent = title;
     }
