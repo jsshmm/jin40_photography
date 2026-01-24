@@ -240,7 +240,11 @@ function setActiveNavLink() {
 
     document.querySelectorAll('.nav-menu a').forEach(link => {
         const href = link.getAttribute('href');
-        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+        // Check if home page
+        const isHomePage = currentPage === '' || currentPage === 'index.html' || currentPage === 'home.html';
+        const isHomeLink = href === '/' || href === 'index.html' || href === 'home';
+
+        if ((isHomePage && isHomeLink) || href === currentPage) {
             link.classList.add('active');
         } else {
             link.classList.remove('active');
