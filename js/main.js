@@ -12,8 +12,6 @@ window.addEventListener('load', () => {
 // ===== DOM Elements =====
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
-const filterBtns = document.querySelectorAll('.filter-btn');
-const galleryItems = document.querySelectorAll('.gallery-item');
 const modal = document.getElementById('imageModal');
 const modalImg = document.getElementById('modalImage');
 const modalCaption = document.getElementById('modalCaption');
@@ -77,29 +75,6 @@ window.addEventListener('scroll', () => {
 
     lastScroll = currentScroll;
 });
-
-// ===== Gallery Filter =====
-if (filterBtns.length > 0 && galleryItems.length > 0) {
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Update active button
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const filter = btn.dataset.filter;
-
-            // Filter gallery items
-            galleryItems.forEach(item => {
-                if (filter === 'all' || item.dataset.category === filter) {
-                    item.classList.remove('hide');
-                    item.style.animation = 'fadeIn 0.5s ease forwards';
-                } else {
-                    item.classList.add('hide');
-                }
-            });
-        });
-    });
-}
 
 // ===== Reusable Lightbox Modal Logic =====
 window.initImageModal = function (selector) {
@@ -206,22 +181,6 @@ window.initImageModal = function (selector) {
     }
 };
 
-// Initialize Gallery Modal (Old Logic Replacement)
-if (document.querySelector('.gallery-item')) {
-    // Wait slightly for dynamic items if needed, or call this after loading
-    // Since gallery items might be dynamic, this initial call might be empty.
-    // However, the helper function re-queries on open. 
-    // BUT, we need to attach listeners. 
-    // Gallery.js or Main.js needs to call this AFTER loading.
-    // For now, let's expose it and let the existing static/dynamic logic call it.
-    // The previous code had `galleryItems` listener here.
-
-    // We will assume static items for now or that verify this works.
-    window.addEventListener('load', () => {
-        window.initImageModal('.gallery-item img');
-    });
-}
-
 // ===== Smooth Scroll for Anchor Links =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -261,16 +220,6 @@ const replayObserver = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// 2. Run-Once Observer (For Gallery Page: fade in once, then stay)
-const onceObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('fade-in');
-            onceObserver.unobserve(entry.target);
-        }
-    });
-}, observerOptions);
-
 // Observe elements for animation
 // Home elements -> Replay
 document.querySelectorAll('.featured-item, .blog-card, .about-content').forEach(el => {
@@ -278,47 +227,12 @@ document.querySelectorAll('.featured-item, .blog-card, .about-content').forEach(
     replayObserver.observe(el);
 });
 
-// Gallery items -> Run Once
-document.querySelectorAll('.gallery-item').forEach(el => {
-    el.style.opacity = '0';
-    onceObserver.observe(el);
-});
-// Note: Dynamic gallery items are observed in gallery.js, make sure to update there if needed or export these.
-// Actually gallery.js handles its own observers effectively via CSS animations or we can expose this.
-// Given separate files, let's keep gallery.js independent but consistent.
-// However, the user specifically mentioned "gallery tab".
-// js/gallery.js uses "item.style.animation = 'fadeIn...'" manually in filtering, 
-// so it might clash with this global observer if not careful.
-// But wait, the previous code observed .gallery-item here in main.js.
-// Since gallery items are dynamic, this main.js code only caches initial ones? 
-// Actually gallery.js loads items dynamically. This selector might be empty on load.
-// Let's ensure gallery.js uses the right logic. 
-// For now, let's just definition separate strategies here if used.
-
 // ===== Lazy Loading Images =====
-if ('loading' in HTMLImageElement.prototype) {
-    // Browser supports native lazy loading
-    document.querySelectorAll('img').forEach(img => {
-        if (!img.hasAttribute('loading')) {
-            img.setAttribute('loading', 'lazy');
-        }
-    });
-} else {
-    // Fallback for browsers without native lazy loading
-    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-
-    const lazyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                lazyObserver.unobserve(img);
-            }
-        });
-    });
-
-    lazyImages.forEach(img => lazyObserver.observe(img));
-}
+document.querySelectorAll('img').forEach(img => {
+    if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+    }
+});
 
 // ===== Active Navigation Link =====
 function setActiveNavLink() {
@@ -335,13 +249,6 @@ function setActiveNavLink() {
 }
 
 setActiveNavLink();
-
-// ===== Featured Items Hover Effect =====
-document.querySelectorAll('.featured-item').forEach(item => {
-    item.addEventListener('click', () => {
-        window.location.href = 'gallery.html';
-    });
-});
 
 // ===== Translation System =====
 const TranslationSystem = {

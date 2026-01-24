@@ -87,16 +87,6 @@ npm run deploy-quick
 
 ---
 
-## How to Resize Existing Images (기존 이미지 리사이즈)
-
-```bash
-npm run resize-images
-```
-- `images/gallery/` 내 모든 이미지를 최대 1600x1600으로 리사이즈
-- 품질: 82%
-
----
-
 ## How to Write a Blog Post (블로그 포스트 작성)
 
 ### Step 1: 템플릿 복사
@@ -161,7 +151,7 @@ npm run build-sitemap   # sitemap.xml만
 ```bash
 ./deploy.sh "Add new blog post: 포스트 제목"
 # 또는
-npm run deploy-quick
+npm run deploy
 ```
 
 ### Step 6: Google Search Console 색인 요청 (선택)
@@ -192,13 +182,6 @@ npm run deploy-quick
 ```bash
 npm run deploy
 ```
-- Git 에디터가 열려서 커밋 메시지 작성
-- 상세한 커밋 메시지 작성 가능
-
-#### 방법 3: npm run deploy-quick
-```bash
-npm run deploy-quick
-```
 - 자동으로 "Update site" 메시지로 커밋
 - 가장 빠른 배포 방법
 
@@ -226,8 +209,7 @@ npx live-server
 ### 사진 관련
 | Command | Script | Description |
 |---------|--------|-------------|
-| `npm run add-photos` | `scripts/add-photos.js` | 새 사진 추가 (리사이즈 + 메타데이터) |
-| `npm run resize-images` | `scripts/resize-images.js` | 기존 이미지 리사이즈 |
+| `npm run add-photos` | `scripts/add-photos.js` | 새 사진 추가 (리사이즈 + WebP 변환 + 메타데이터) |
 
 ### 블로그 및 SEO 관련
 | Command | Script | Description |
@@ -240,8 +222,7 @@ npx live-server
 | Command | Description |
 |---------|-------------|
 | `./deploy.sh "메시지"` | 한 명령어로 배포 (커밋 메시지 지정) |
-| `npm run deploy` | 에디터로 커밋 메시지 작성 후 배포 |
-| `npm run deploy-quick` | "Update site" 메시지로 자동 배포 |
+| `npm run deploy` | "Update site" 메시지로 자동 배포 |
 
 ---
 
