@@ -1,23 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" class="snap-scroll">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jin40_photography</title>
+    <title>Guestbook - jin40_photography</title>
 
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="jin40_photography">
-    <meta property="og:description" content="Capturing moments that matter">
-    <meta property="og:image" content="https://jin40photo.com/images/hero/hero-photo.webp">
-    <meta property="og:url" content="https://jin40photo.com/">
+    <meta property="og:title" content="Guestbook - jin40_photography">
+    <meta property="og:description" content="Leave a message">
+    <meta property="og:url" content="https://jin40photo.com/guestbook">
     <meta property="og:type" content="website">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="jin40_photography">
-    <meta name="twitter:description" content="Capturing moments that matter">
-    <meta name="twitter:image" content="https://jin40photo.com/images/hero/hero-photo.webp">
 
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -27,7 +20,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-
     gtag('config', 'G-XHMYGCR88L');
 </script>
 
@@ -43,10 +35,10 @@
             <span></span>
         </button>
         <ul class="nav-menu">
-            <li><a href="/" class="active">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="gallery">Gallery</a></li>
             <li><a href="blog">Blog</a></li>
-            <li><a href="guestbook">Guestbook</a></li>
+            <li><a href="guestbook" class="active">Guestbook</a></li>
             <li>
                 <!-- Language Switcher -->
                 <div class="lang-switcher">
@@ -70,55 +62,23 @@
         </ul>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Hello, I'm <span class="highlight">jin40_</span>, a Photographer</h1>
-            <p class="hero-description">
-                Capturing moments that matter<br>
-            </p>
-            <a href="gallery" class="btn btn-primary">View My Work</a>
-        </div>
-        <div class="hero-image">
-            <img src="images/hero/hero-photo.webp" alt="Featured photo"
-                onerror="this.src='https://picsum.photos/600/400?random=1'">
-        </div>
-    </section>
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Guestbook</h1>
+        <p>Leave a message, say hello, or share your thoughts</p>
+    </header>
 
-    <!-- About Section -->
-    <section class="about" id="about">
+    <!-- Guestbook Section -->
+    <section class="comments-section guestbook-section">
         <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-image">
-                    <img src="images/hero/hero-photo2.webp" alt="Profile photo"
-                        onerror="this.src='https://picsum.photos/400/400?random=2'">
-                </div>
-                <div class="about-text">
-                    <h3>Just a hobbyist photographer</h3>
-                    <p data-i18n="about.p1">
-                        Based in Seoul, archiving moments and stories.
-                        Shooting with Fujifilm X-T30 and Ricoh GR IIIx.
-                    </p>
-                    <p data-i18n="about.p2">
-                        This portfolio showcases photographs from my experiences across various
-                        countries. Each image tells a story of the places I've explored.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Works -->
-    <section class="featured">
-        <div class="container">
-            <h2 class="section-title">Featured Works</h2>
-            <div class="featured-grid" id="featured-grid">
-                <!-- Dynamically loaded by main.js -->
-            </div>
-            <div class="text-center">
-                <a href="gallery" class="btn btn-secondary">View More</a>
-            </div>
+            <form id="comment-form" class="comment-form guestbook-form">
+                <input type="text" name="name" placeholder="Your name" required maxlength="50">
+                <textarea name="message" placeholder="Write your message here..." rows="5" required maxlength="1000"></textarea>
+                <!-- Honeypot: hidden via CSS -->
+                <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <div id="comment-message"></div>
         </div>
     </section>
 
@@ -159,6 +119,14 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/comments.js"></script>
+    <script>
+        // Guestbook: form only, no public display
+        document.addEventListener('DOMContentLoaded', () => {
+            CommentSystem.postSlug = null;
+            CommentSystem.setupForm();
+        });
+    </script>
 </body>
 
 </html>
