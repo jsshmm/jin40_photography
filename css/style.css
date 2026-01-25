@@ -1016,7 +1016,7 @@ html.snap-scroll section {
 .related-posts h3 {
     font-size: 1.8rem;
     margin-bottom: 30px;
-    text-align: center;
+    text-align: left;
 }
 
 .related-grid {
@@ -1711,7 +1711,7 @@ html.snap-scroll .footer {
     font-size: 0.85rem;
     color: var(--text-light);
     text-align: center;
-    font-style: italic;
+    font-style: normal;
 }
 
 /* Alternative caption style (for text after images) */
@@ -1719,6 +1719,7 @@ html.snap-scroll .footer {
     display: block;
     text-align: center;
     font-size: 0.85rem;
+    font-style: normal;
     color: var(--text-light);
     margin-top: -20px;
     margin-bottom: 20px;
@@ -2012,6 +2013,13 @@ html.snap-scroll .footer {
         box-shadow: var(--shadow);
         /* Restore shadow */
         display: block;
+    }
+
+    /* Image captions with same padding as text */
+    .markdown-body p em,
+    .markdown-body figcaption {
+        padding-left: 25px;
+        padding-right: 25px;
     }
 
     /* Also handle the featured image at the top */
