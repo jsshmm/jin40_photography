@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - jin40_photography</title>
+    <meta name="description" content="Browse my photography collection featuring travel and street photos from Korea, Japan, Thailand, Vietnam, Cambodia, and Indonesia.">
+    <link rel="canonical" href="https://jin40photo.com/gallery">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Gallery - jin40_photography">
@@ -20,6 +22,31 @@
     <meta name="twitter:image" content="https://jin40photo.com/images/hero/hero-photo.webp">
 
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ImageGallery",
+        "@id": "https://jin40photo.com/gallery",
+        "name": "Gallery - jin40_photography",
+        "description": "A collection of travel and street photography from Korea, Japan, Thailand, Vietnam, Cambodia, and Indonesia",
+        "url": "https://jin40photo.com/gallery",
+        "author": {
+            "@type": "Person",
+            "@id": "https://jin40photo.com/#photographer",
+            "name": "jin40"
+        },
+        "about": [
+            {"@type": "Country", "name": "Korea"},
+            {"@type": "Country", "name": "Japan"},
+            {"@type": "Country", "name": "Thailand"},
+            {"@type": "Country", "name": "Vietnam"},
+            {"@type": "Country", "name": "Cambodia"},
+            {"@type": "Country", "name": "Indonesia"}
+        ]
+    }
+    </script>
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XHMYGCR88L"></script>

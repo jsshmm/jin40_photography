@@ -195,6 +195,48 @@ const BlogSystem = {
             }
             meta.setAttribute('content', content);
         });
+
+        // Update canonical URL
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.setAttribute('rel', 'canonical');
+            document.head.appendChild(canonical);
+        }
+        canonical.setAttribute('href', postUrl);
+
+        // Update JSON-LD structured data
+        const jsonldScript = document.getElementById('post-jsonld');
+        if (jsonldScript) {
+            const jsonld = {
+                "@context": "https://schema.org",
+                "@type": "BlogPosting",
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": postUrl
+                },
+                "headline": metadata.title || '',
+                "description": metadata.excerpt || metadata.title || '',
+                "image": thumbnailUrl,
+                "author": {
+                    "@type": "Person",
+                    "@id": "https://jin40photo.com/#photographer",
+                    "name": "jin40"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "jin40",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://jin40photo.com/images/hero/hero-photo2.webp"
+                    }
+                },
+                "datePublished": metadata.date || '',
+                "dateModified": metadata.date || '',
+                "articleSection": metadata.category || 'General'
+            };
+            jsonldScript.textContent = JSON.stringify(jsonld);
+        }
     },
 
     // Render single post (for post.html)
