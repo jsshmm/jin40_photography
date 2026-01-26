@@ -5,8 +5,9 @@
 // Handles markdown-based blog functionality
 
 const BlogSystem = {
-    postsIndexUrl: './posts/index.json',
-    postsDir: './posts/',
+    // Use absolute paths to work from any location
+    postsIndexUrl: '/posts/index.json',
+    postsDir: '/posts/',
     currentLang: localStorage.getItem('selectedLang') || 'en',
 
     // Format date based on language
@@ -89,6 +90,13 @@ const BlogSystem = {
         return obj[key][this.currentLang] || obj[key]['en'] || '';
     },
 
+    // Convert relative image path to absolute
+    getAbsoluteImagePath(src) {
+        if (!src) return '';
+        if (src.startsWith('/') || src.startsWith('http')) return src;
+        return '/' + src;
+    },
+
     // Render blog list (for blog.html)
     async renderBlogList() {
         const blogGrid = document.getElementById('blog-grid');
@@ -120,12 +128,13 @@ const BlogSystem = {
             blogGrid.innerHTML = posts.map(post => {
                 const title = this.getLocalized(post, 'title');
                 const excerpt = this.getLocalized(post, 'excerpt');
+                const thumbnail = this.getAbsoluteImagePath(post.thumbnail);
 
                 return `
                 <article class="blog-card">
                     <div class="blog-image">
-                        <a href="post.html?slug=${post.slug}">
-                            <img src="${post.thumbnail}" alt="${title}"
+                        <a href="/blog/${post.slug}/">
+                            <img src="${thumbnail}" alt="${title}"
                                  onerror="this.src='https://picsum.photos/600/400?random=${Math.random()}'">
                         </a>
                         <span class="blog-category">${post.category}</span>
@@ -134,9 +143,9 @@ const BlogSystem = {
                         <div class="blog-meta">
                             <span class="blog-date">${this.formatDate(post.date)}</span>
                         </div>
-                        <h3><a href="post.html?slug=${post.slug}">${title}</a></h3>
+                        <h3><a href="/blog/${post.slug}/">${title}</a></h3>
                         <p>${excerpt}</p>
-                        <a href="post.html?slug=${post.slug}" class="read-more">${readMoreText}</a>
+                        <a href="/blog/${post.slug}/" class="read-more">${readMoreText}</a>
                     </div>
                 </article>
             `}).join('');
@@ -159,7 +168,7 @@ const BlogSystem = {
     // Update meta tags for SEO and social sharing
     updateMetaTags(metadata, slug) {
         const baseUrl = 'https://jin40photo.com';
-        const postUrl = `${baseUrl}/post.html?slug=${slug}`;
+        const postUrl = `${baseUrl}/blog/${slug}/`;
         const thumbnailUrl = metadata.thumbnail ? `${baseUrl}/${metadata.thumbnail}` : `${baseUrl}/images/hero/hero-photo.webp`;
 
         // Update or create meta tags
@@ -254,8 +263,8 @@ const BlogSystem = {
 
         if (!postBody) return;
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const slug = urlParams.get('slug');
+        // Extract slug from URL path: /blog/{slug}/ -> {slug}
+        const slug = window.location.pathname.split('/blog/')[1]?.replace(/\/$/, '');
 
         if (!slug) {
             if (postLoading) postLoading.style.display = 'none';
@@ -279,7 +288,7 @@ const BlogSystem = {
             if (postDate) postDate.textContent = metadata.date ? this.formatDate(metadata.date) : '';
 
             if (postThumbnail && metadata.thumbnail) {
-                postThumbnail.src = metadata.thumbnail;
+                postThumbnail.src = this.getAbsoluteImagePath(metadata.thumbnail);
                 postThumbnail.alt = metadata.title;
             }
 
@@ -288,9 +297,14 @@ const BlogSystem = {
 
             if (typeof marked !== 'undefined') {
                 marked.setOptions({ breaks: true, gfm: true });
-                postBody.innerHTML = marked.parse(content);
+                let html = marked.parse(content);
+                // Fix relative image paths to absolute
+                html = html.replace(/src="(?!\/|http)(images\/)/g, 'src="/$1');
+                postBody.innerHTML = html;
             } else {
-                postBody.innerHTML = this.simpleMarkdownRender(content);
+                let html = this.simpleMarkdownRender(content);
+                html = html.replace(/src="(?!\/|http)(images\/)/g, 'src="/$1');
+                postBody.innerHTML = html;
             }
 
             // Initialize Lightbox for Blog Images
@@ -336,9 +350,10 @@ const BlogSystem = {
 
             grid.innerHTML = otherPosts.map(post => {
                 const title = this.getLocalized(post, 'title');
+                const thumbnail = this.getAbsoluteImagePath(post.thumbnail);
                 return `
-                <a href="post.html?slug=${post.slug}" class="related-card">
-                    <img src="${post.thumbnail}" alt="${title}"
+                <a href="/blog/${post.slug}/" class="related-card">
+                    <img src="${thumbnail}" alt="${title}"
                          onerror="this.src='https://picsum.photos/300/200?random=${Math.random()}'">
                     <h4>${title}</h4>
                 </a>
@@ -363,36 +378,47 @@ const BlogSystem = {
             .replace(/\n/g, '<br>');
     },
 
+    // Check if current page is a blog post
+    isPostPage() {
+        const path = window.location.pathname;
+        // Match /blog/{slug}/ pattern (slug must exist)
+        return path.startsWith('/blog/') && path.split('/blog/')[1]?.replace(/\/$/, '').length > 0;
+    },
+
+    // Check if current page is the blog list
+    isBlogListPage() {
+        const path = window.location.pathname;
+        const page = path.split('/').pop();
+        return page === 'blog.html' || page === 'blog' || path === '/blog/' || path === '/blog';
+    },
+
     // Refresh content on language change
     onLanguageChange(lang) {
         this.currentLang = lang;
-        const currentPage = window.location.pathname.split('/').pop();
 
-        if (currentPage === 'blog.html' || currentPage === 'blog' || currentPage === '') {
+        if (this.isBlogListPage()) {
             this.renderBlogList();
-        } else if (currentPage === 'post.html' || currentPage === 'post') {
+        } else if (this.isPostPage()) {
             this.renderPost();
         }
     },
 
     // Initialize based on current page
     init() {
-        const currentPage = window.location.pathname.split('/').pop();
-
         // Listen for global language change event
         window.addEventListener('languageChanged', (e) => {
             this.onLanguageChange(e.detail.lang);
         });
 
-        // Check for blog page
-        if (currentPage === 'blog.html' || currentPage === 'blog' || currentPage === '') {
+        // Check for blog list page
+        if (this.isBlogListPage()) {
             if (document.getElementById('blog-grid')) {
                 this.renderBlogList();
             }
         }
 
         // Check for post page
-        if (currentPage === 'post.html' || currentPage === 'post') {
+        if (this.isPostPage()) {
             this.renderPost();
         }
     }

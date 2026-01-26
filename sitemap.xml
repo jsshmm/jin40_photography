@@ -2,36 +2,36 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://jin40photo.com/</loc>
-        <lastmod>2026-01-24</lastmod>
+        <lastmod>2026-01-26</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://jin40photo.com/home</loc>
-        <lastmod>2026-01-24</lastmod>
+        <lastmod>2026-01-26</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://jin40photo.com/gallery</loc>
-        <lastmod>2026-01-24</lastmod>
+        <lastmod>2026-01-26</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://jin40photo.com/blog</loc>
-        <lastmod>2026-01-24</lastmod>
+        <lastmod>2026-01-26</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://jin40photo.com/post.html?slug=2026-01-24-fukuoka(2020)</loc>
+        <loc>https://jin40photo.com/blog/2026-01-24-fukuoka(2020)/</loc>
         <lastmod>2026-01-24</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://jin40photo.com/post.html?slug=2026-01-21-ainoshima-cats</loc>
+        <loc>https://jin40photo.com/blog/2026-01-21-ainoshima-cats/</loc>
         <lastmod>2026-01-20</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>

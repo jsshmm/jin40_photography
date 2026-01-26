@@ -13,6 +13,8 @@ const path = require('path');
 
 const POSTS_DIR = path.join(__dirname, '..', 'posts');
 const INDEX_FILE = path.join(POSTS_DIR, 'index.json');
+const BLOG_DIR = path.join(__dirname, '..', 'blog');
+const POST_TEMPLATE = path.join(__dirname, '..', 'post.html');
 
 /**
  * Parse frontmatter from markdown content
@@ -144,7 +146,80 @@ function buildBlogIndex() {
     fs.writeFileSync(INDEX_FILE, JSON.stringify(posts, null, 2) + '\n');
 
     console.log(`\nSuccess! Generated index.json with ${posts.length} post(s)`);
+
+    return posts;
+}
+
+/**
+ * Generate individual blog post HTML files
+ * Creates blog/{slug}/index.html for each post
+ */
+function generatePostPages(posts) {
+    console.log('\nGenerating post pages...\n');
+
+    // Read the post.html template
+    if (!fs.existsSync(POST_TEMPLATE)) {
+        console.error('Error: post.html template not found');
+        process.exit(1);
+    }
+
+    const template = fs.readFileSync(POST_TEMPLATE, 'utf-8');
+
+    // Create blog directory if it doesn't exist
+    if (!fs.existsSync(BLOG_DIR)) {
+        fs.mkdirSync(BLOG_DIR, { recursive: true });
+    }
+
+    // Clean up old blog post directories (keep only current posts)
+    const existingDirs = fs.readdirSync(BLOG_DIR, { withFileTypes: true })
+        .filter(item => item.isDirectory())
+        .map(item => item.name);
+
+    const currentSlugs = posts.map(p => p.slug);
+
+    for (const dir of existingDirs) {
+        if (!currentSlugs.includes(dir)) {
+            const dirPath = path.join(BLOG_DIR, dir);
+            fs.rmSync(dirPath, { recursive: true });
+            console.log(`  🗑️  Removed old: ${dir}`);
+        }
+    }
+
+    // Generate HTML for each post
+    for (const post of posts) {
+        const postDir = path.join(BLOG_DIR, post.slug);
+        const indexFile = path.join(postDir, 'index.html');
+
+        // Create post directory
+        if (!fs.existsSync(postDir)) {
+            fs.mkdirSync(postDir, { recursive: true });
+        }
+
+        // Modify template: fix relative paths for nested directory
+        let html = template;
+
+        // Fix CSS path
+        html = html.replace('href="css/style.css"', 'href="../../css/style.css"');
+
+        // Fix script paths
+        html = html.replace('src="js/main.js"', 'src="../../js/main.js"');
+        html = html.replace('src="js/comments.js"', 'src="../../js/comments.js"');
+        html = html.replace('src="js/blog.js"', 'src="../../js/blog.js"');
+
+        // Fix navigation links (use replaceAll for multiple occurrences)
+        html = html.replaceAll('href="/"', 'href="../../"');
+        html = html.replaceAll('href="gallery"', 'href="../../gallery"');
+        html = html.replaceAll('href="blog"', 'href="../../blog"');
+        html = html.replaceAll('href="guestbook"', 'href="../../guestbook"');
+
+        // Write the file
+        fs.writeFileSync(indexFile, html);
+        console.log(`  ✓ ${post.slug}/index.html`);
+    }
+
+    console.log(`\n✅ Generated ${posts.length} post page(s) in blog/`);
 }
 
 // Run
-buildBlogIndex();
+const posts = buildBlogIndex();
+generatePostPages(posts);

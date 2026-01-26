@@ -261,7 +261,7 @@ const TranslationSystem = {
 
     async init() {
         try {
-            const response = await fetch('data/translations.json');
+            const response = await fetch('/data/translations.json');
             this.translations = await response.json();
 
             this.setupLanguageSwitcher();
@@ -382,7 +382,7 @@ async function loadFeaturedWorks() {
     if (!featuredGrid) return;
 
     try {
-        const response = await fetch('data/metadata.json');
+        const response = await fetch('/data/metadata.json');
         if (!response.ok) throw new Error('Failed to load metadata');
 
         const items = await response.json();

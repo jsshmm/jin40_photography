@@ -60,7 +60,7 @@ function generateSitemap() {
         }
 
         xml += '    <url>\n';
-        xml += `        <loc>${SITE_URL}/post.html?slug=${post.slug}</loc>\n`;
+        xml += `        <loc>${SITE_URL}/blog/${post.slug}/</loc>\n`;
         xml += `        <lastmod>${post.date}</lastmod>\n`;
         xml += `        <changefreq>monthly</changefreq>\n`;
         xml += `        <priority>0.7</priority>\n`;
